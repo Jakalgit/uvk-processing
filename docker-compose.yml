@@ -1,0 +1,9 @@
+services:
+  uvk-processing:
+    build: .
+    container_name: uvk-processing
+    ports:
+      - "7000:7000"
+    env_file:
+      - .env
+    restart: unless-stopped
