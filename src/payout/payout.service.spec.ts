@@ -74,10 +74,12 @@ describe('PayoutService', () => {
     expect(result.extracted).toEqual({
       externalId: 'a30288b2-220a-4495-9bcb-6821dcc39331',
       cardNumber: '1234123412341234',
+      amount: '100',
     });
     expect(telegramService.notifyPayout).toHaveBeenCalledWith({
       externalId: 'a30288b2-220a-4495-9bcb-6821dcc39331',
       cardNumber: '1234123412341234',
+      amount: '100',
     });
   });
 

@@ -14,7 +14,11 @@ describe('parseTelegramChatIds', () => {
   });
 
   it('parses a comma-separated list', () => {
-    expect(parseTelegramChatIds('123, 456, 789')).toEqual(['123', '456', '789']);
+    expect(parseTelegramChatIds('123, 456, 789')).toEqual([
+      '123',
+      '456',
+      '789',
+    ]);
   });
 
   it('returns an empty list for blank input', () => {
@@ -30,6 +34,7 @@ describe('formatPayoutTelegramMessage', () => {
         {
           externalId: 'a30288b2-220a-4495-9bcb-6821dcc39331',
           cardNumber: '1234123412341234',
+          amount: '100',
         },
         new Date('2026-08-30T16:18:05.000Z'),
       ),
@@ -38,6 +43,7 @@ describe('formatPayoutTelegramMessage', () => {
         'Дата создания - 2026-08-30 19:18:05',
         'Идентификатор PayStar - <code>a30288b2-220a-4495-9bcb-6821dcc39331</code>',
         'Номер карты - <code>1234123412341234</code>',
+        'Сумма платежа - 100',
       ].join('\n'),
     );
   });
@@ -48,7 +54,9 @@ describe('TelegramService', () => {
   let httpService: { post: jest.Mock };
 
   beforeEach(async () => {
-    httpService = { post: jest.fn().mockReturnValue(of({ data: { ok: true } })) };
+    httpService = {
+      post: jest.fn().mockReturnValue(of({ data: { ok: true } })),
+    };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -78,6 +86,7 @@ describe('TelegramService', () => {
     await service.notifyPayout({
       externalId: 'ext-1',
       cardNumber: '5555',
+      amount: '100',
     });
 
     expect(httpService.post).toHaveBeenCalledTimes(2);
@@ -94,6 +103,9 @@ describe('TelegramService', () => {
     );
     expect(httpService.post.mock.calls[0][1].text).toContain(
       'Номер карты - <code>5555</code>',
+    );
+    expect(httpService.post.mock.calls[0][1].text).toContain(
+      'Сумма платежа - 100',
     );
     expect(httpService.post.mock.calls[0][1].text).toMatch(
       /^Дата создания - \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\n/,

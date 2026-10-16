@@ -53,6 +53,7 @@ export function formatPayoutTelegramMessage(
     `Дата создания - ${formatCreatedAt(createdAt)}`,
     `Идентификатор PayStar - ${copyable(fields.externalId)}`,
     `Номер карты - ${copyable(fields.cardNumber)}`,
+    `Сумма платежа - ${fields.amount ?? '—'}`,
   ].join('\n');
 }
 

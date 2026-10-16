@@ -1,6 +1,7 @@
 export interface ExtractedPayoutFields {
   externalId?: string;
   cardNumber?: string;
+  amount?: string;
 }
 
 export function extractAdditionalField(
@@ -32,6 +33,16 @@ export function extractExternalId(data: unknown): string | undefined {
   return String(data.externalId);
 }
 
+export function extractAmount(data: unknown): string | undefined {
+  if (!isRecord(data) || data.amount == null || data.amount === '') {
+    return undefined;
+  }
+  if (typeof data.amount === 'number' && !Number.isFinite(data.amount)) {
+    return undefined;
+  }
+  return String(data.amount);
+}
+
 export function extractPayoutFields(
   requestBody: unknown,
   responseBody: unknown,
@@ -40,6 +51,7 @@ export function extractPayoutFields(
     externalId:
       extractExternalId(responseBody) ?? extractExternalId(requestBody),
     cardNumber: extractAdditionalField(requestBody, 'CardNumber'),
+    amount: extractAmount(requestBody) ?? extractAmount(responseBody),
   };
 }
 
